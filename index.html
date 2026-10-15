@@ -138,8 +138,9 @@
     </div>
   </div>
     <script>
+      <script>
     // ============================================================
-    // BLOCK 3: GATES & NETWORKING MIDDLEWARE HANDSHAKES
+    // SCRIPT BLOCK A: SANDBOX-PROOF CHANNELS & MATRIX LAYOUTS
     // ============================================================
     const APPS_SCRIPT_URL = "https://google.com";
     let userSession = null;
@@ -152,17 +153,6 @@
     let localHistoryArray = [];
 
     document.addEventListener("DOMContentLoaded", function () {
-      try {
-        var cachedSession = localStorage.getItem('ase_user_session');
-        if (cachedSession) {
-          userSession = JSON.parse(cachedSession);
-          bootstrapApplicationWorkspace();
-        }
-        var cachedHistory = localStorage.getItem('ase_local_history');
-        if (cachedHistory) {
-          localHistoryArray = JSON.parse(cachedHistory);
-        }
-      } catch (e) {}
       initListeners();
     });
     
@@ -185,21 +175,19 @@
       btn.disabled = true;
       btn.textContent = "Verifying...";
       
+      // Removed localStorage item locks to bypass browser tracking blocks completely
       jsonpRequest({ action: "login", email: email, password: pass }, function (res) {
         btn.disabled = false;
         btn.textContent = "Log In";
         if (res && res.success) {
           userSession = res;
-          try { localStorage.setItem('ase_user_session', JSON.stringify(res)); } catch(e){}
           bootstrapApplicationWorkspace();
         } else {
           displaySystemNotice(res.error || "Login rejected.", true);
         }
       });
     }
-    // ============================================================
-    // BLOCK 4: WORKSPACE BOOTSTRAPPING & CARD MATRIX RENDERERS
-    // ============================================================
+
     function bootstrapApplicationWorkspace() {
       document.getElementById("loginScreen").classList.add("hidden");
       document.getElementById("appScreen").classList.remove("hidden");
@@ -217,7 +205,6 @@
         container.innerHTML = '<button class="track-btn active" onclick="setTrack(\'Strength Day\')">Strength Day</button><button class="track-btn" onclick="setTrack(\'Functional\')">Functional</button><button class="track-btn" onclick="setTrack(\'Running Day\')">Running Day</button>';
       }
       fetchActiveTrackDashboardData();
-      renderLocalHistoryLedgerPane();
     }
 
     function setTrack(tName) {
@@ -277,12 +264,12 @@
           '</div>';
         }
 
-        card.innerHTML = '<div class="exercise-head"><div><div class="exercise-name">' + ex.exerciseName + '</div><div class="exercise-target">3 sets of ' + ex.minReps + '-' + ex.maxReps + '</div></div><div style="font-size:20px; font-weight:800; color:var(--accent);">' + targetLoad + ' <span style="font-size:12px; font-weight:400; color:var(--text-dim);">lbs</span></div></div><div class="history-cues"><div class="history-cue-title">History</div>' + historyHtml + '</div><div class="set-matrix">' + matrixRows + '</div><div class="note-container"><textarea id="notes_' + idx + '" rows="1" placeholder="Add session notes for this exercise here..."></textarea></div><div class="card-actions"><button class="action-btn" onclick="launchRestTimerClockContainer()">⏱ Rest Timer</button><button class="action-btn primary" id="submit_' + idx + '" onclick="commitPerformanceRowData(' + idx + ')">Submit Session Log</button></div>';
+        card.innerHTML = '<div class="exercise-head"><div><div class="exercise-name">' + ex.exerciseName + '</div><div class="exercise-target">3 sets of ' + ex.minReps + '-' + ex.maxReps + '</div></div><div style="font-size:20px; font-weight:800; color:var(--accent);">' + targetLoad + ' <span style="font-size:12px; font-weight:400; color:var(--text-dim);">lbs</span></div></div><div class="history-cues"><div class="history-cue-title">History</div>' + historyHtml + '</div><div class="set-matrix">' + matrixRows + '</div><div class="note-container"><textarea id="notes_' + idx + '" rows="1" placeholder="Add session notes for this exercise here..."></textarea></div><div class="card-actions"><button class="action-btn" onclick="launchRestTimerClockContainer()">⏱ Rest Timer</button><button class="action-btn primary" id="submit_${idx}" onclick="commitPerformanceRowData(' + idx + ')">Submit Session Log</button></div>';
         box.appendChild(card);
       });
     }
     // ============================================================
-    // BLOCK 5: SHADING MECHANICAL COMPILATIONS & LOCAL LEDGERS
+    // SCRIPT BLOCK B: AUTOREGULATION & MOBILE REST TIME WIDGETS
     // ============================================================
     function evaluateAutoRegShading(exIdx) {
       var card = document.getElementById("card_ex_" + exIdx);
@@ -336,7 +323,6 @@
       var dObj = new Date();
       var dateStr = String(dObj.getMonth() + 1).padStart(2,'0') + "/" + String(dObj.getDate()).padStart(2,'0');
       localHistoryArray.unshift({ date: dateStr, name: targetEx.exerciseName, sets: setsData });
-      try { localStorage.setItem('ase_local_history', JSON.stringify(localHistoryArray)); } catch(e){}
       renderLocalHistoryLedgerPane();
       
       jsonpRequest({ action: "submitWorkout", athleteEmail: userSession.email, targetTrack: activeTrack, exerciseName: targetEx.exerciseName, performancePayloadJSON: JSON.stringify(payload) }, function (res) {
@@ -362,9 +348,7 @@
         return "<div style='background:#f8fafc;padding:12px;border:1px solid var(--border);border-radius:var(--radius);'><strong>" + h.date + " - " + h.name + ":</strong> <span style='color:var(--accent);font-weight:bold;margin-left:8px;'>" + metrics + "</span></div>";
       }).join("");
     }
-    // ============================================================
-    // BLOCK 6: COACHING CHAT DRAWER, REST TIMER CLOCK & JSONP HOOKS
-    // ============================================================
+
     function openCoachChatDrawer() { document.getElementById("chatModal").classList.remove("hidden"); syncMessageHistoryFeed(); }
     function syncMessageHistoryFeed() {
       var box = document.getElementById("chatMessageThread"); 
@@ -426,9 +410,8 @@
     }
 
     function formatClockOutput(s) { var mins = Math.floor(s / 60), secs = s % 60; return String(mins).padStart(2,"0") + ":" + String(secs).padStart(2, "0"); }
-    function clearLocalSessionAndExit() { try { localStorage.removeItem('ase_user_session'); localStorage.removeItem('ase_local_history'); } catch(e){} location.reload(); }
+    function clearLocalSessionAndExit() { location.reload(); }
     function displaySystemNotice(m, isErr) { var t = document.getElementById("toast"); t.textContent = m; t.className = "toast"; if (isErr) t.classList.add("error"); t.classList.remove("hidden"); setTimeout(function() { t.classList.add("hidden"); }, 3000); }
   </script>
 </body>
 </html>
-
