@@ -151,8 +151,9 @@
   </div>
   <script>
       <script>
+      <script>
     // ============================================================
-    // SCRIPT PART A: ENDPOINTS, AUTHENTICATORS & UI BUILDERS
+    // SCRIPT BLOCK A: SECURITY ENDPOINTS & CLEAN INTERFACE LOOPS
     // ============================================================
     const APPS_SCRIPT_URL = "https://google.com";
     let userSession = JSON.parse(localStorage.getItem('ase_user_session')) || null, activeTrack = "Strength Day", loadedExercises = [], intervalTimerHandle = null, timerTimeLeft = 120, timerTotal = 120, timerIsPaused = false;
@@ -237,30 +238,27 @@
           }).join("");
         }
         
-        // Fixed: Re-injected explicit set indexing matrix parameters [1, 2, 3] cleanly
-        let matrixRows = [1, 2, 3].map(function(s) {
-          return `
-            <div class="set-row" id="row_${idx}_${s}">
-              <div class="set-label">S${s}</div>
-              <div><input type="number" pattern="[0-9]*" placeholder="lbs" id="load_${idx}_${s}" oninput="evaluateAutoRegShading(${idx})" value="${ex.preAllocatedLoad || ''}" /></div>
-              <div><input type="number" pattern="[0-9]*" placeholder="reps" id="reps_${idx}_${s}" oninput="evaluateAutoRegShading(${idx})" /></div>
-              <div>
-                <select id="grade_${idx}_${s}" onchange="evaluateAutoRegShading(${idx})">
-                  <option value="">Grade</option><option>A+</option><option>A</option><option>A-</option>
-                  <option>B+</option><option>B</option><option>B-</option><option>C+</option><option>C</option>
-                  <option>C-</option><option>D</option><option>F</option>
-                </select>
-              </div>
-            </div>
-          `;
-        }).join("");
+        // Rewritten: Ultra-stable hardwired string generation pass to completely block array rendering crashes
+        let matrixRows = "";
+        for (let s = 1; s <= 3; s++) {
+          matrixRows += '<div class="set-row" id="row_' + idx + '_' + s + '">' +
+            '<div class="set-label">S' + s + '</div>' +
+            '<div><input type="number" pattern="[0-9]*" placeholder="lbs" id="load_' + idx + '_' + s + '" oninput="evaluateAutoRegShading(' + idx + ')" value="' + (ex.preAllocatedLoad || '') + '" /></div>' +
+            '<div><input type="number" pattern="[0-9]*" placeholder="reps" id="reps_' + idx + '_' + s + '" oninput="evaluateAutoRegShading(' + idx + ')" /></div>' +
+            '<div><select id="grade_' + idx + '_' + s + '" onchange="evaluateAutoRegShading(' + idx + ')">' +
+              '<option value="">Grade</option><option>A+</option><option>A</option><option>A-</option>' +
+              '<option>B+</option><option>B</option><option>B-</option><option>C+</option><option>C</option>' +
+              '<option>C-</option><option>D</option><option>F</option>' +
+            '</select></div>' +
+          '</div>';
+        }
 
         card.innerHTML = `<div class="exercise-head"><div><div class="exercise-name">${ex.exerciseName}</div><div class="exercise-target">3 sets of ${ex.minReps}-${ex.maxReps}</div></div><div style="font-size:20px; font-weight:800; color:var(--accent);">${targetLoad} <span style="font-size:12px; font-weight:400; color:var(--text-dim);">lbs</span></div></div><div class="history-cues"><div class="history-cue-title">History</div>${historyHtml}</div><div class="set-matrix">${matrixRows}</div><div class="note-container"><textarea id="notes_${idx}" rows="1" placeholder="Add session notes for this exercise here..."></textarea></div><div class="card-actions"><button class="action-btn" onclick="launchRestTimerClockContainer()">⏱ Rest Timer</button><button class="action-btn primary" id="submit_${idx}" onclick="commitPerformanceRowData(${idx})">Submit Session Log</button></div>`;
         box.appendChild(card);
       });
     }
     // ============================================================
-    // SCRIPT PART B: CALCULATION MIDDLEWARE & MINIREST CLOCKS
+    // SCRIPT BLOCK B: CALCULATION MIDDLEWARE & MINIREST CLOCKS
     // ============================================================
     function evaluateAutoRegShading(exIdx) {
       const card = document.getElementById(`card_ex_${exIdx}`);
@@ -385,4 +383,3 @@
   </script>
 </body>
 </html>
-
