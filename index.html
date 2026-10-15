@@ -150,10 +150,11 @@
     </div>
   </div>
   <script>
+      <script>
     // ============================================================
-    // BLOCK 3: GATES & COMMUNICATIONS CONTROLLER MIDDLEWARE
+    // SCRIPT PART A: ENDPOINTS, AUTHENTICATORS & UI BUILDERS
     // ============================================================
-    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyp0gTkXWAIsKO4W4gWcpR45mPVpz7fxjdlxRmI1DvutyyC70LzLQMhe0JNtkhBz3g/exec";
+    const APPS_SCRIPT_URL = "https://google.com";
     let userSession = JSON.parse(localStorage.getItem('ase_user_session')) || null, activeTrack = "Strength Day", loadedExercises = [], intervalTimerHandle = null, timerTimeLeft = 120, timerTotal = 120, timerIsPaused = false;
     let localHistoryArray = JSON.parse(localStorage.getItem('ase_local_history')) || [];
 
@@ -217,9 +218,7 @@
         else { box.innerHTML = "<div style='color:var(--danger); text-align:center; padding:20px;'>Connection timed out or failed to sync.</div>"; }
       });
     }
-     // ============================================================
-    // BLOCK 4: EXERCISE CARD MATRIX GENERATOR
-    // ============================================================
+
     function renderExercisePrescriptionCards() {
       const box = document.getElementById("exerciseContainer"); box.innerHTML = "";
       if (loadedExercises.length === 0) { box.innerHTML = "<div style='color:var(--text-dim); text-align:center; padding:20px;'>No exercises prescribed for today.</div>"; return; }
@@ -238,17 +237,30 @@
           }).join("");
         }
         
-        let matrixRows = "";
-        for (let s = 1; s <= 3; s++) {
-          matrixRows += `<div class="set-row" id="row_${idx}_${s}"><div class="set-label">S${s}</div><div><input type="number" pattern="[0-9]*" placeholder="lbs" id="load_${idx}_${s}" oninput="evaluateAutoRegShading(${idx})" value="${ex.preAllocatedLoad || ''}" /></div><div><input type="number" pattern="[0-9]*" placeholder="reps" id="reps_${idx}_${s}" oninput="evaluateAutoRegShading(${idx})" /></div><div><select id="grade_${idx}_${s}" onchange="evaluateAutoRegShading(${idx})"><option value="">Grade</option><option>A+</option><option>A</option><option>A-</option><option>B+</option><option>B</option><option>B-</option><option>C+</option><option>C</option><option>C-</option><option>D</option><option>F</option></select></div></div>`;
-        }
+        // Fixed: Re-injected explicit set indexing matrix parameters [1, 2, 3] cleanly
+        let matrixRows = [1, 2, 3].map(function(s) {
+          return `
+            <div class="set-row" id="row_${idx}_${s}">
+              <div class="set-label">S${s}</div>
+              <div><input type="number" pattern="[0-9]*" placeholder="lbs" id="load_${idx}_${s}" oninput="evaluateAutoRegShading(${idx})" value="${ex.preAllocatedLoad || ''}" /></div>
+              <div><input type="number" pattern="[0-9]*" placeholder="reps" id="reps_${idx}_${s}" oninput="evaluateAutoRegShading(${idx})" /></div>
+              <div>
+                <select id="grade_${idx}_${s}" onchange="evaluateAutoRegShading(${idx})">
+                  <option value="">Grade</option><option>A+</option><option>A</option><option>A-</option>
+                  <option>B+</option><option>B</option><option>B-</option><option>C+</option><option>C</option>
+                  <option>C-</option><option>D</option><option>F</option>
+                </select>
+              </div>
+            </div>
+          `;
+        }).join("");
 
         card.innerHTML = `<div class="exercise-head"><div><div class="exercise-name">${ex.exerciseName}</div><div class="exercise-target">3 sets of ${ex.minReps}-${ex.maxReps}</div></div><div style="font-size:20px; font-weight:800; color:var(--accent);">${targetLoad} <span style="font-size:12px; font-weight:400; color:var(--text-dim);">lbs</span></div></div><div class="history-cues"><div class="history-cue-title">History</div>${historyHtml}</div><div class="set-matrix">${matrixRows}</div><div class="note-container"><textarea id="notes_${idx}" rows="1" placeholder="Add session notes for this exercise here..."></textarea></div><div class="card-actions"><button class="action-btn" onclick="launchRestTimerClockContainer()">⏱ Rest Timer</button><button class="action-btn primary" id="submit_${idx}" onclick="commitPerformanceRowData(${idx})">Submit Session Log</button></div>`;
         box.appendChild(card);
       });
     }
     // ============================================================
-    // BLOCK 5: SHADING ENGINES & DATA LEDGER APPENDS
+    // SCRIPT PART B: CALCULATION MIDDLEWARE & MINIREST CLOCKS
     // ============================================================
     function evaluateAutoRegShading(exIdx) {
       const card = document.getElementById(`card_ex_${exIdx}`);
@@ -312,9 +324,7 @@
         return `<div style='background:#f8fafc;padding:12px;border:1px solid var(--border);border-radius:var(--radius);'><strong>${h.date} - ${h.name}:</strong> <span style='color:var(--accent);font-weight:bold;margin-left:8px;'>${metrics}</span></div>`;
       }).join("");
     }
-    // ============================================================
-    // BLOCK 6: DYNAMIC MICRO INTERVAL TIMERS & CHAT DRAWERS
-    // ============================================================
+
     function openCoachChatDrawer() { document.getElementById("chatModal").classList.remove("hidden"); syncMessageHistoryFeed(); }
     function syncMessageHistoryFeed() {
       const box = document.getElementById("chatMessageThread"); box.innerHTML = "<div style='color:var(--text-dim); text-align:center;'>Syncing...</div>";
