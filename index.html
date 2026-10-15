@@ -196,47 +196,107 @@
         else { box.innerHTML = "<div style='color:var(--danger); text-align:center; padding:20px;'>Connection timed out or failed to sync.</div>"; }
       });
     }
-    // ============================================================
-    // BLOCK 4: CARD GENERATION & VALIDATED SELECTION LOOPS
+        // ============================================================
+    // BLOCK 4 - PART A: CARD RENDERING LOOPS
     // ============================================================
     function renderExercisePrescriptionCards() {
-      const box = document.getElementById("exerciseContainer"); box.innerHTML = "";
-      if (loadedExercises.length === 0) { box.innerHTML = "<div style='color:var(--text-dim); text-align:center; padding:20px;'>No exercises prescribed for today.</div>"; return; }
+      const box = document.getElementById("exerciseContainer"); 
+      box.innerHTML = "";
+      if (loadedExercises.length === 0) { 
+        box.innerHTML = "<div style='color:var(--text-dim); text-align:center; padding:20px;'>No exercises prescribed for today.</div>"; 
+        return; 
+      }
       
       loadedExercises.forEach(function (ex, idx) {
-        const card = document.createElement("div"); card.className = "exercise-card";
+        const card = document.createElement("div"); 
+        card.className = "exercise-card";
         let targetLoad = ex.preAllocatedLoad !== null ? ex.preAllocatedLoad : "—";
         let historyHtml = "<div style='color:var(--text-dim); font-style:italic;'>No prior performance entries in active database rows.</div>";
-        if (ex.history && ex.history.length > 0) { historyHtml = ex.history.map(h => `<div>• <strong>${h.timestamp}:</strong> Load ${h.payload.load || 'N/A'} | Reps: ${h.payload.reps || 'N/A'} (${h.payload.grade || '—'})</div>`).join(""); }
-        
-        let matrixRows = "";
-        for (let s = 1; s <= 3; s++) {
-          matrixRows += `<div class="set-row" id="row_${idx}_${s}"><div class="set-label">Set ${s}</div><div><input type="number" placeholder="lbs" id="load_${idx}_${s}" oninput="evaluateAutoRegShading(${idx}, ${s})" value="${ex.preAllocatedLoad || ''}" /></div><div><input type="number" placeholder="reps" id="reps_${idx}_${s}" oninput="evaluateAutoRegShading(${idx}, ${s})" /></div><div><select id="grade_${idx}_${s}" onchange="evaluateAutoRegShading(${idx}, ${s})"><option value="">Grade</option><option>A+</option><option>A</option><option>A-</option><option>B+</option><option>B</option><option>B-</option><option>C+</option><option>C</option><option>C-</option><option>D</option><option>F</option></select></div></div>`;
+        if (ex.history && ex.history.length > 0) { 
+          historyHtml = ex.history.map(h => `<div>• <strong>${h.timestamp}:</strong> Load ${h.payload.load || 'N/A'} | Reps: ${h.payload.reps || 'N/A'} (${h.payload.grade || '—'})</div>`).join(""); 
         }
+        
+        let matrixRows = [1, 2, 3].map(function(s) {
+          return `
+            <div class="set-row" id="row_${idx}_${s}">
+              <div class="set-label">Set ${s}</div>
+              <div><input type="number" placeholder="lbs" id="load_${idx}_${s}" oninput="evaluateAutoRegShading(${idx}, ${s})" value="${ex.preAllocatedLoad || ''}" /></div>
+              <div><input type="number" placeholder="reps" id="reps_${idx}_${s}" oninput="evaluateAutoRegShading(${idx}, ${s})" /></div>
+              <div>
+                <select id="grade_${idx}_${s}" onchange="evaluateAutoRegShading(${idx}, ${s})">
+                  <option value="">Grade</option><option>A+</option><option>A</option><option>A-</option>
+                  <option>B+</option><option>B</option><option>B-</option><option>C+</option><option>C</option>
+                  <option>C-</option><option>D</option><option>F</option>
+                </select>
+              </div>
+            </div>
+          `;
+        }).join("");
 
-        card.innerHTML = `<div class="exercise-head"><div><div class="exercise-name">${ex.exerciseName}</div><div class="exercise-target">Stimulus: ${ex.minReps}-${ex.maxReps} Reps | Seq #${ex.sequenceNum}</div></div><div style="font-size:20px; font-weight:800; color:var(--accent);">${targetLoad} <span style="font-size:12px; font-weight:400; color:var(--text-dim);">lbs</span></div></div><div class="history-cues"><div class="history-cue-title">Historic Comparison Benchmarks (Last 2 Efforts)</div>${historyHtml}</div><div class="set-matrix">${matrixRows}</div><div class="card-actions"><button class="action-btn" onclick="launchRestTimerClockContainer(120)">⏱ Rest Timer</button><button class="action-btn primary" id="submit_${idx}" onclick="commitPerformanceRowData(${idx})">Submit Session Log</button></div>`;
+        card.innerHTML = `
+          <div class="exercise-head">
+            <div>
+              <div class="exercise-name">${ex.exerciseName}</div>
+              <div class="exercise-target">Stimulus: ${ex.minReps}-${ex.maxReps} Reps | Seq #${ex.sequenceNum}</div>
+            </div>
+            <div style="font-size:20px; font-weight:800; color:var(--accent);">${targetLoad} <span style="font-size:12px; font-weight:400; color:var(--text-dim);">lbs</span></div>
+          </div>
+          <div class="history-cues">
+            <div class="history-cue-title">Historic Comparison Benchmarks (Last 2 Efforts)</div>
+            ${historyHtml}
+          </div>
+          <div class="set-matrix">
+            ${matrixRows}
+          </div>
+          <div class="card-actions">
+            <button class="action-btn" onclick="launchRestTimerClockContainer(120)">⏱ Rest Timer</button>
+            <button class="action-btn primary" id="submit_${idx}" onclick="commitPerformanceRowData(${idx})">Submit Session Log</button>
+          </div>
+        `;
         box.appendChild(card);
       });
     }
 
     function evaluateAutoRegShading(exIdx, setNum) {
-      const row = document.getElementById(`row_${exIdx}_${setNum}`), repsInput = document.getElementById(`reps_${exIdx}_${setNum}`).value, gradeInput = document.getElementById(`grade_${exIdx}_${setNum}`).value;
-      if (!row) return; row.className = "set-row"; if (!repsInput || !gradeInput) return;
-      const reps = parseInt(repsInput, 10), targetEx = loadedExercises[exIdx], validGrades = ["A+", "A", "A-", "B+", "B", "B-", "C+"];
-      if (!validGrades.includes(gradeInput) || reps < targetEx.minReps) row.classList.add("shading-orange");
-      else if (reps >= targetEx.maxReps) row.classList.add("shading-green");
-      else row.classList.add("shading-blue");
+      const row = document.getElementById(`row_${exIdx}_${setNum}`);
+      const repsInput = document.getElementById(`reps_${exIdx}_${setNum}`).value;
+      const gradeInput = document.getElementById(`grade_${exIdx}_${setNum}`).value;
+      if (!row) return; 
+      row.className = "set-row"; 
+      if (!repsInput || !gradeInput) return;
+      
+      const reps = parseInt(repsInput, 10);
+      const targetEx = loadedExercises[exIdx];
+      const validGrades = ["A+", "A", "A-", "B+", "B", "B-", "C+"];
+      
+      if (!validGrades.includes(gradeInput) || reps < targetEx.minReps) {
+        row.classList.add("shading-orange");
+      } else if (reps >= targetEx.maxReps) {
+        row.classList.add("shading-green");
+      } else {
+        row.classList.add("shading-blue");
+      }
     }
-
+    // ============================================================
+    // BLOCK 4 - PART B: SUBMISSIONS, CHAT & REST TIMERS
+    // ============================================================
     function commitPerformanceRowData(exIdx) {
-      const targetEx = loadedExercises[exIdx], setsData = []; let formComplete = true;
+      const targetEx = loadedExercises[exIdx], setsData = []; 
+      let formComplete = true;
       for (let s = 1; s <= 3; s++) {
-        const l = document.getElementById(`load_${exIdx}_${s}`).value, r = document.getElementById(`reps_${exIdx}_${setNum = s}`).value, g = document.getElementById(`grade_${exIdx}_${s}`).value;
-        if (!l || !r || !g) { formComplete = false; break; } setsData.push({ set: s, load: parseFloat(l), reps: parseInt(r, 10), grade: g });
+        const l = document.getElementById(`load_${exIdx}_${s}`).value;
+        const r = document.getElementById(`reps_${exIdx}_${s}`).value;
+        const g = document.getElementById(`grade_${exIdx}_${s}`).value;
+        if (!l || !r || !g) { formComplete = false; break; } 
+        setsData.push({ set: s, load: parseFloat(l), reps: parseInt(r, 10), grade: g });
       }
       if (!formComplete) { displaySystemNotice("Complete all 3 rows.", true); return; }
+      
       const payload = { exercises: { name: targetEx.exerciseName, sets: setsData } };
-      const btn = document.getElementById(`submit_${exIdx}`); btn.disabled = true; btn.textContent = "Transmitting metrics...";
+      const btn = document.getElementById(`submit_${exIdx}`); 
+      btn.disabled = true; 
+      btn.textContent = "Transmitting metrics...";
+      
       jsonpRequest({ action: "submitWorkout", athleteEmail: userSession.email, targetTrack: activeTrack, exerciseName: targetEx.exerciseName, performancePayloadJSON: JSON.stringify(payload) }, function (res) {
         if (res && res.success) { displaySystemNotice("Session log locked."); btn.textContent = "Logged ✓"; btn.style.background = "var(--text-dim)"; }
         else { displaySystemNotice(res.error || "Submission failed.", true); btn.disabled = false; btn.textContent = "Submit Session Log"; }
@@ -246,22 +306,26 @@
     function openCoachChatDrawer() { document.getElementById("chatModal").classList.remove("hidden"); syncMessageHistoryFeed(); }
     
     function syncMessageHistoryFeed() {
-      const box = document.getElementById("chatMessageThread"); box.innerHTML = "<div style='color:var(--text-dim); text-align:center;'>Syncing...</div>";
+      const box = document.getElementById("chatMessageThread"); 
+      box.innerHTML = "<div style='color:var(--text-dim); text-align:center;'>Syncing...</div>";
       jsonpRequest({ action: "fetchMessages", userEmail: userSession.email }, function (res) {
         if (res && res.success) {
-          box.innerHTML = ""; if (res.messages.length === 0) { box.innerHTML = "<div style='color:var(--text-dim); text-align:center; padding-top:20px;'>No notes on record.</div>"; return; }
+          box.innerHTML = ""; 
+          if (res.messages.length === 0) { box.innerHTML = "<div style='color:var(--text-dim); text-align:center; padding-top:20px;'>No notes on record.</div>"; return; }
           res.messages.forEach(m => {
             const r = document.createElement("div"); r.style.padding = "6px 10px"; r.style.borderRadius = "8px"; r.style.maxWidth = "80%"; r.style.marginBottom = "4px";
             if (m.direction === "out") { r.style.alignSelf = "flex-end"; r.style.background = "var(--accent)"; r.style.color = "#fff"; }
-            else { r.style.alignSelf = "flex-start"; r.style.background = "var(--border-strong)"; r.style.color = var(--text-bright); }
+            else { r.style.alignSelf = "flex-start"; r.style.background = "var(--border-strong)"; r.style.color = "var(--text-bright)"; }
             r.textContent = m.text; box.appendChild(r);
-          }); box.scrollTop = box.scrollHeight;
+          }); 
+          box.scrollTop = box.scrollHeight;
         }
       });
     }
 
     function submitMessageTransactionText() {
-      const txt = document.getElementById("chatInputText").value.trim(); if (!txt) return;
+      const txt = document.getElementById("chatInputText").value.trim(); 
+      if (!txt) return;
       document.getElementById("chatSendMsgBtn").disabled = true;
       jsonpRequest({ action: "transmitMessage", sender: userSession.email, receiver: userSession.coachEmail, messageText: txt }, function (res) {
         document.getElementById("chatSendMsgBtn").disabled = false; if (res && res.success) { document.getElementById("chatInputText").value = ""; syncMessageHistoryFeed(); }
