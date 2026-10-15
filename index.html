@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f1115" />
+  <title>Apex Stimulus Portal</title>
+  <style>
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
+    :root {
+      --bg: #0f1115; --bg-card: #181b22; --bg-elevated: #1a1e26; --bg-input: #0f1115;
+      --border: #262a33; --border-strong: #2c313c; --text: #e8e8e8; --text-dim: #9aa3b0;
+      --text-bright: #ffffff; --accent: #2e6cf6; --success: #1f7a3d; --danger: #b3402f;
+      --warn: #d29a1f; --radius: 12px; --radius-lg: 16px;
+    }
+    html, body { background: var(--bg); color: var(--text); font-family: -apple-system, sans-serif; min-height: 100vh; overflow-x: hidden; }
+    .hidden { display: none !important; }
+    .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--success); color: #fff; padding: 12px 24px; border-radius: var(--radius); font-size: 14px; font-weight: 600; z-index: 1000; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+    .toast.error { background: var(--danger); }
+    .login-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 16px; background: var(--bg); }
+    .login-card { width: 100%; max-width: 400px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px 24px; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+    .login-card h1 { font-size: 24px; color: var(--text-bright); text-align: center; margin-bottom: 8px; font-weight: 800; letter-spacing: -0.5px; }
+    .login-sub { font-size: 14px; color: var(--text-dim); text-align: center; margin-bottom: 28px; }
+    .login-card label { display: block; font-size: 12px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+    .login-card input { width: 100%; padding: 14px; font-size: 16px; border-radius: var(--radius); border: 1px solid var(--border-strong); background: var(--bg-input); color: #fff; margin-bottom: 20px; font-family: inherit; }
+    .login-card input:focus { outline: none; border-color: var(--accent); }
+    .primary-btn { width: 100%; padding: 14px; font-size: 16px; font-weight: 700; border-radius: var(--radius); border: none; background: var(--accent); color: #fff; cursor: pointer; transition: opacity 0.15s; }
+    .primary-btn:active { opacity: 0.8; }
+    .login-error { color: var(--danger); font-size: 13px; text-align: center; margin-top: 14px; min-height: 18px; font-weight: 500; }
+    .app-screen { min-height: 100vh; display: flex; flex-direction: column; }
+    .app-header { display: flex; align-items: center; justify-content: space-between; padding: 16px; background: var(--bg-card); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 10; }
+    .header-left h1 { font-size: 18px; font-weight: 800; color: var(--text-bright); }
+    .header-user { font-size: 13px; color: var(--text-dim); margin-top: 2px; }
+    .header-right { display: flex; gap: 8px; }
+    .icon-btn { width: 40px; height: 40px; border-radius: var(--radius); border: 1px solid var(--border-strong); background: var(--bg-elevated); color: var(--text); font-size: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; }
+    .icon-btn:active { background: var(--border-strong); }
+    .msg-badge { position: absolute; top: -4px; right: -4px; background: var(--danger); color: #fff; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 99px; }
+    .tab-bar { display: flex; background: var(--bg-card); border-bottom: 1px solid var(--border); }
+    .tab-btn { flex: 1; padding: 14px; background: transparent; border: none; color: var(--text-dim); font-size: 14px; font-weight: 600; cursor: pointer; border-bottom: 2px solid transparent; }
+    .tab-btn.active { color: var(--accent); border-color: var(--accent); background: rgba(46,108,246,0.04); }
+    .main-content { flex: 1; padding: 16px; max-width: 640px; width: 100%; margin: 0 auto; padding-bottom: 40px; }
+    .track-buttons { display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 4px; }
+    .track-btn { padding: 10px 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 99px; color: var(--text); font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .track-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .exercise-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 18px; margin-bottom: 16px; }
+    .exercise-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+    .exercise-name { font-size: 18px; font-weight: 700; color: var(--text-bright); }
+    .exercise-target { font-size: 13px; color: var(--text-dim); margin-top: 2px; }
+    .set-matrix { display: flex; flex-direction: column; gap: 12px; margin-top: 16px; }
+    .set-row { display: grid; grid-template-columns: 60px 1fr 1fr 100px; gap: 8px; align-items: center; padding: 8px; border-radius: var(--radius); background: var(--bg-input); border: 1px solid var(--border); transition: background 0.3s; }
+    .set-row input, .set-row select { width: 100%; padding: 8px; font-size: 14px; border-radius: 6px; border: 1px solid var(--border-strong); background: var(--bg-card); color: #fff; text-align: center; }
+    .set-row input:focus, .set-row select:focus { outline: none; border-color: var(--accent); }
+    .set-label { font-size: 13px; font-weight: 700; color: var(--text-dim); text-align: center; }
+    .set-row.shading-green { background: rgba(31,122,61,0.25) !important; border-color: var(--success); }
+    .set-row.shading-blue { background: rgba(46,108,246,0.25) !important; border-color: var(--accent); }
+    .set-row.shading-orange { background: rgba(179,64,47,0.25) !important; border-color: var(--danger); }
+    .card-actions { display: flex; gap: 8px; margin-top: 14px; }
+    .action-btn { flex: 1; padding: 10px; font-size: 13px; font-weight: 600; border-radius: var(--radius); cursor: pointer; border: 1px solid var(--border-strong); background: var(--bg-elevated); color: var(--text); }
+    .action-btn.primary { background: var(--success); border-color: var(--success); color: #fff; }
+    .history-cues { background: rgba(255,255,255,0.02); border: 1px dashed var(--border-strong); border-radius: var(--radius); padding: 12px; margin-bottom: 14px; font-size: 13px; }
+    .history-cue-title { font-weight: 700; color: var(--text-dim); margin-bottom: 4px; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; }
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 16px; }
+    .modal-card { width: 100%; max-width: 480px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; position: relative; }
+    .modal-close { position: absolute; top: 12px; right: 12px; width: 32px; height: 40px; background: transparent; border: none; color: var(--text-dim); font-size: 20px; cursor: pointer; }
+    .modal-card h2 { font-size: 18px; margin-bottom: 16px; color: var(--text-bright); }
+  </style>
+</head>
+
+<body>
+  <div id="toast" class="toast hidden"></div>
+
+  <!-- AUTH REGISTRATION WINDOW GATE -->
+  <section id="loginScreen" class="login-screen">
+    <div class="login-card">
+      <h1>Apex Stimulus Engine</h1>
+      <p class="login-sub">White-Label Performance Portal v2</p>
+      <div id="loginForm">
+        <label for="userEmail">Portal Login Email ID</label>
+        <input id="userEmail" type="email" placeholder="name@domain.com" />
+        <label for="userPassword">Access Pin Key</label>
+        <input id="userPassword" type="password" placeholder="••••" />
+        <button id="loginBtn" class="primary-btn">Authenticate Gateway</button>
+        <div id="loginError" class="login-error"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- USER MAIN DASHBOARD PANEL VIEWS -->
+  <section id="appScreen" class="app-screen hidden">
+    <header class="app-header">
+      <div class="header-left">
+        <h1 id="portalTitle">ASE Portal</h1>
+        <div class="header-user">Athlete: <span id="headerAthleteName">—</span></div>
+      </div>
+      <div class="header-right">
+        <button id="msgDrawerBtn" class="icon-btn" title="Messages">✉<span id="msgBadge" class="msg-badge hidden">0</span></button>
+        <button id="logoutBtn" class="icon-btn" title="Exit Interface">⏻</button>
+      </div>
+    </header>
+
+    <nav class="tab-bar">
+      <button class="tab-btn active" id="tabBtnWorkout">Active Training</button>
+      <button class="tab-btn" id="tabBtnHistory">Performance Log</button>
+    </nav>
+
+    <main id="viewWorkout" class="main-content">
+      <div class="track-buttons" id="trackButtonsContainer"></div>
+      <div id="exerciseContainer"></div>
+    </main>
+
+    <main id="viewHistory" class="main-content hidden">
+      <div class="history-cues">
+        <div class="history-cue-title">Performance Log History Ledger</div>
+        <div id="historyLedgerList">No logged sessions found in active memory tab paths.</div>
+      </div>
+    </main>
+  </section>
+
+  <!-- PERFORMANCE REST TIMER OVERLAY CLOCK -->
+  <div id="timerModal" class="modal-overlay hidden">
+    <div class="modal-card" style="text-align:center; background:#0f1115; color:#fff;">
+      <button class="modal-close" id="closeTimerModalBtn">×</button>
+      <h2 id="timerModalTitle" style="margin-bottom:4px;">Interval Clock</h2>
+      <div id="timerClockDisplay" style="font-size:72px; font-weight:800; font-variant-numeric:tabular-nums; margin:20px 0; color:#b8f52c;">00:00</div>
+      <div style="display:flex; justify-content:space-around; margin-bottom:24px; font-size:14px; color:#9aa3b0;">
+        <div>ELAPSED: <span id="timerStatElapsed" style="color:#fff; font-weight:bold;">0:00</span></div>
+        <div>REMAINING: <span id="timerStatRemaining" style="color:#fff; font-weight:bold;">0:00</span></div>
+      </div>
+      <div style="display:flex; gap:12px;">
+        <button id="timerPauseBtn" class="primary-btn" style="background:#2e6cf6;">PAUSE</button>
+        <button id="timerResetBtn" class="primary-btn" style="background:transparent; border:1px solid var(--border-strong);">RESET</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- COACH TEXT CHANNEL MODAL DRAWER -->
+  <div id="chatModal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <button class="modal-close" id="closeChatModalBtn">×</button>
+      <h2>Coach Channel Feed</h2>
+      <div id="chatMessageThread" style="height:260px; overflow-y:auto; padding:12px; background:var(--bg-input); border:1px solid var(--border); border-radius:var(--radius); margin-bottom:12px; display:flex; flex-direction:column; gap:8px; font-size:14px;"></div>
+      <textarea id="chatInputText" rows="2" placeholder="Send technical message or fatigue note..." style="width:100%; padding:10px; background:var(--bg-input); border:1px solid var(--border-strong); border-radius:var(--radius); color:#fff; font-family:inherit; resize:none; margin-bottom:12px;"></textarea>
+      <button id="chatSendMsgBtn" class="primary-btn">Transmit Message</button>
+    </div>
+  </div>
+  <script>
+    // ============================================================
+    // BLOCK 3: CROSS-ORIGIN API MIDDLEWARE HANDSHAKES
+    // ============================================================
+    const APPS_SCRIPT_URL = "https://google.com";
+    let userSession = JSON.parse(localStorage.getItem('ase_user_session')) || null, activeTrack = "Strength Day", loadedExercises = [], intervalTimerHandle = null, timerTimeLeft = 0, timerElapsed = 0, timerTotal = 120, timerIsPaused = false;
+
+    document.addEventListener("DOMContentLoaded", function () { initListeners(); if (userSession) bootstrapApplicationWorkspace(); });
+    
+    function initListeners() {
+      document.getElementById("loginBtn").addEventListener("click", executeLoginHandshake);
+      document.getElementById("logoutBtn").addEventListener("click", clearLocalSessionAndExit);
+      document.getElementById("tabBtnWorkout").addEventListener("click", () => switchMainNavigationPane("workout"));
+      document.getElementById("tabBtnHistory").addEventListener("click", () => switchMainNavigationPane("history"));
+      document.getElementById("msgDrawerBtn").addEventListener("click", openCoachChatDrawer);
+      document.getElementById("closeChatModalBtn").addEventListener("click", () => document.getElementById("chatModal").classList.add("hidden"));
+      document.getElementById("chatSendMsgBtn").addEventListener("click", submitMessageTransactionText);
+      document.getElementById("closeTimerModalBtn").addEventListener("click", shutdownIntervalTimerEngine);
+      document.getElementById("timerPauseBtn").addEventListener("click", toggleIntervalTimerPauseState);
+      document.getElementById("timerResetBtn").addEventListener("click", resetIntervalTimerClockDisplay);
+    }
+
+    function executeLoginHandshake() {
+      const email = document.getElementById("userEmail").value.trim(), pass = document.getElementById("userPassword").value.trim();
+      if (!email || !pass) { displaySystemNotice("Fill out all authentication fields.", true); return; }
+      document.getElementById("loginBtn").disabled = true; document.getElementById("loginBtn").textContent = "Validating Gateway Security...";
+      jsonpRequest({ action: "login", email: email, password: pass }, function (res) {
+        document.getElementById("loginBtn").disabled = false; document.getElementById("loginBtn").textContent = "Authenticate Gateway";
+        if (res && res.success) { userSession = res; localStorage.setItem('ase_user_session', JSON.stringify(res)); bootstrapApplicationWorkspace(); }
+        else { document.getElementById("loginError").textContent = res.error || "Authentication handshake rejected."; }
+      });
+    }
+
+    function bootstrapApplicationWorkspace() {
+      document.getElementById("loginScreen").classList.add("hidden"); document.getElementById("appScreen").classList.remove("hidden");
+      document.getElementById("headerAthleteName").textContent = userSession.athleteName; document.getElementById("portalTitle").textContent = "ASE Portal";
+      const container = document.getElementById("trackButtonsContainer");
+      if (userSession.routingMode === "Fixed Calendar") {
+        container.innerHTML = `<button class="track-btn active" onclick="setTrack('Strength Day')">Strength Day</button><button class="track-btn" onclick="setTrack('Running Day')">Running Day</button>`;
+      } else {
+        container.innerHTML = `<button class="track-btn active" onclick="setTrack('Strength Day')">Strength Day</button><button class="track-btn" onclick="setTrack('Functional')">Functional</button><button class="track-btn" onclick="setTrack('Running Day')">Running Day</button>`;
+      }
+      fetchActiveTrackDashboardData();
+    }
+
+    function setTrack(tName) { activeTrack = tName; document.querySelectorAll(".track-btn").forEach(b => b.classList.toggle("active", b.textContent === tName)); fetchActiveTrackDashboardData(); }
+    
+    function fetchActiveTrackDashboardData() {
+      const box = document.getElementById("exerciseContainer"); box.innerHTML = "<div style='color:var(--text-dim); text-align:center; padding:20px;'>Syncing system ledger elements...</div>";
+      jsonpRequest({ action: "getDashboard", athleteEmail: userSession.email, targetTrack: activeTrack }, function (res) {
+        if (res && res.success) { loadedExercises = res.exercises || []; renderExercisePrescriptionCards(); }
+        else { box.innerHTML = "<div style='color:var(--danger); text-align:center; padding:20px;'>Connection timed out or failed to sync.</div>"; }
+      });
+    }
+    // ============================================================
+    // BLOCK 4: CARD RENDERING, DYNAMIC SHADING & CLOCK LOOPS
+    // ============================================================
+    function renderExercisePrescriptionCards() {
+      const box = document.getElementById("exerciseContainer"); box.innerHTML = "";
+      if (loadedExercises.length === 0) { box.innerHTML = "<div style='color:var(--text-dim); text-align:center; padding:20px;'>No exercises prescribed for today.</div>"; return; }
+      loadedExercises.forEach(function (ex, idx) {
+        const card = document.createElement("div"); card.className = "exercise-card";
+        let targetLoad = ex.preAllocatedLoad !== null ? ex.preAllocatedLoad : "—";
+        let historyHtml = "<div style='color:var(--text-dim); font-style:italic;'>No prior performance entries in active database rows.</div>";
+        if (ex.history && ex.history.length > 0) { historyHtml = ex.history.map(h => `<div>• <strong>${h.timestamp}:</strong> Load ${h.payload.load || 'N/A'} | Reps: ${h.payload.reps || 'N/A'} (${h.payload.grade || '—'})</div>`).join(""); }
+        card.innerHTML = `<div class="exercise-head"><div><div class="exercise-name">${ex.exerciseName}</div><div class="exercise-target">Stimulus: ${ex.minReps}-${ex.maxReps} Reps | Seq #${ex.sequenceNum}</div></div><div style="font-size:20px; font-weight:800; color:var(--accent);">${targetLoad} <span style="font-size:12px; font-weight:400; color:var(--text-dim);">lbs</span></div></div><div class="history-cues"><div class="history-cue-title">Historic Comparison Benchmarks (Last 2 Efforts)</div>${historyHtml}</div><div class="set-matrix">${[1,2,3].map(s => `<div class="set-row" id="row_\({idx}_\){s}"><div class="set-label">Set \${s}</div><div><input type="number" placeholder="lbs" id="load_\${idx}_s" oninput="evaluateAutoRegShading({idx}, s)" value="{ex.preAllocatedLoad || ''}" /></div><div><input type="number" placeholder="reps" id="reps_\({idx}_\){s}" oninput="evaluateAutoRegShading(idx, {s})" /></div><div><select id="grade_\({idx}_\){s}" onchange="evaluateAutoRegShading(idx, {s})"><option value="">Grade</option><option>A+</option><option>A</option><option>A-</option><option>B+</option><option>B</option><option>B-</option><option>C+</option><option>C</option><option>C-</option><option>D</option><option>F</option></select></div></div>`).join("")}</div><div class="card-actions"><button class="action-btn" onclick="launchRestTimerClockContainer(120)">⏱ Rest Timer</button><button class="action-btn primary" id="submit_${idx}" onclick="commitPerformanceRowData(${idx})">Submit Session Log</button></div>`;
+        box.appendChild(card);
+      });
+    }
+
+    function evaluateAutoRegShading(exIdx, setNum) {
+      const row = document.getElementById(`row_${exIdx}_${setNum}`), repsInput = document.getElementById(`reps_${exIdx}_${setNum}`).value, gradeInput = document.getElementById(`grade_${exIdx}_${setNum}`).value;
+      if (!row) return; row.className = "set-row"; if (!repsInput || !gradeInput) return;
+      const reps = parseInt(repsInput, 10), targetEx = loadedExercises[exIdx], validGrades = ["A+", "A", "A-", "B+", "B", "B-", "C+"];
+      if (!validGrades.includes(gradeInput) || reps < targetEx.minReps) row.classList.add("shading-orange");
+      else if (reps >= targetEx.maxReps) row.classList.add("shading-green");
+      else row.classList.add("shading-blue");
+    }
+
+    function commitPerformanceRowData(exIdx) {
+      const targetEx = loadedExercises[exIdx], setsData = []; let formComplete = true;
+      for (let s = 1; s <= 3; s++) {
+        const l = document.getElementById(`load_${exIdx}_${s}`).value, r = document.getElementById(`reps_${exIdx}_${s}`).value, g = document.getElementById(`grade_${exIdx}_${s}`).value;
+        if (!l || !r || !g) { formComplete = false; break; } setsData.push({ set: s, load: parseFloat(l), reps: parseInt(r, 10), grade: g });
+      }
+      if (!formComplete) { displaySystemNotice("Complete all 3 rows.", true); return; }
+      const payload = { load: setsData[0].load, reps: setsData[0].reps, grade: setsData[0].grade, exercises: { sets: setsData } };
+      const btn = document.getElementById(`submit_${exIdx}`); btn.disabled = true; btn.textContent = "Transmitting metrics...";
+      jsonpRequest({ action: "submitWorkout", athleteEmail: userSession.email, targetTrack: activeTrack, exerciseName: targetEx.exerciseName, performancePayloadJSON: JSON.stringify(payload) }, function (res) {
+        if (res && res.success) { displaySystemNotice("Session log locked."); btn.textContent = "Logged ✓"; btn.style.background = "var(--text-dim)"; }
+        else { displaySystemNotice(res.error || "Submission failed.", true); btn.disabled = false; btn.textContent = "Submit Session Log"; }
+      });
+    }
+
+    function openCoachChatDrawer() { document.getElementById("chatModal").classList.remove("hidden"); syncMessageHistoryFeed(); }
+    
+    function syncMessageHistoryFeed() {
+      const box = document.getElementById("chatMessageThread"); box.innerHTML = "<div style='color:var(--text-dim); text-align:center;'>Syncing...</div>";
+      jsonpRequest({ action: "fetchMessages", userEmail: userSession.email }, function (res) {
+        if (res && res.success) {
+          box.innerHTML = ""; if (res.messages.length === 0) { box.innerHTML = "<div style='color:var(--text-dim); text-align:center; padding-top:20px;'>No notes on record.</div>"; return; }
+          res.messages.forEach(m => {
+            const r = document.createElement("div"); r.style.padding = "6px 10px"; r.style.borderRadius = "8px"; r.style.maxWidth = "80%"; r.style.marginBottom = "4px";
+            if (m.direction === "out") { r.style.alignSelf = "flex-end"; r.style.background = "var(--accent)"; r.style.color = "#fff"; }
+            else { r.style.alignSelf = "flex-start"; r.style.background = "var(--border-strong)"; r.style.color = "#fff"; }
+            r.textContent = m.text; box.appendChild(r);
+          }); box.scrollTop = box.scrollHeight;
+        }
+      });
+    }
+
+    function submitMessageTransactionText() {
+      const txt = document.getElementById("chatInputText").value.trim(); if (!txt) return;
+      document.getElementById("chatSendMsgBtn").disabled = true;
+      jsonpRequest({ action: "transmitMessage", sender: userSession.email, receiver: userSession.coachEmail, messageText: txt }, function (res) {
+        document.getElementById("chatSendMsgBtn").disabled = false; if (res && res.success) { document.getElementById("chatInputText").value = ""; syncMessageHistoryFeed(); }
+      });
+    }
+
+    function launchRestTimerClockContainer(duration) { timerTimeLeft = duration; timerElapsed = 0; timerTotal = duration; timerIsPaused = false; document.getElementById("timerModal").classList.remove("hidden"); document.getElementById("timerClockDisplay").textContent = formatClockOutput(timerTimeLeft); if (intervalTimerHandle) clearInterval(intervalTimerHandle); intervalTimerHandle = setInterval(executeTimerTickLoop, 1000); }
+    function executeTimerTickLoop() { if (timerIsPaused) return; timerTimeLeft--; timerElapsed++; document.getElementById("timerClockDisplay").textContent = formatClockOutput(timerTimeLeft); document.getElementById("timerStatElapsed").textContent = formatClockOutput(timerElapsed); document.getElementById("timerStatRemaining").textContent = formatClockOutput(timerTimeLeft); if (timerTimeLeft <= 0) { shutdownIntervalTimerEngine(); displaySystemNotice("Rest period clear."); } }
+    function toggleIntervalTimerPauseState() { timerIsPaused = !timerIsPaused; document.getElementById("timerPauseBtn").textContent = timerIsPaused ? "RESUME" : "PAUSE"; }
+    function resetIntervalTimerClockDisplay() { launchRestTimerClockContainer(timerTotal); }
+    function shutdownIntervalTimerEngine() { clearInterval(intervalTimerHandle); document.getElementById("timerModal").classList.add("hidden"); }
+    function switchMainNavigationPane(tPane) { document.getElementById("tabBtnWorkout").classList.toggle("active", tPane === "workout"); document.getElementById("tabBtnHistory").classList.toggle("active", tPane === "history"); document.getElementById("viewWorkout").classList.toggle("hidden", tPane !== "workout"); document.getElementById("viewHistory").classList.toggle("hidden", tPane !== "history"); }
+    
+    function jsonpRequest(p, cbFn) { 
+      const cbName = 'ase_cb_' + Math.random().toString(36).slice(2, 10); 
+      window[cbName] = function (d) { delete window[cbName]; const scr = document.getElementById(cbName); if(scr) document.body.removeChild(scr); cbFn(d); }; 
+      const q = new URLSearchParams(p); q.append("callback", cbName); 
+      const script = document.createElement("script"); script.id = cbName; script.src = APPS_SCRIPT_URL + "?" + q.toString(); 
+      document.body.appendChild(script); 
+    }
+
+    function formatClockOutput(s) { const mins = Math.floor(s / 60), secs = s % 60; return mins + ":" + String(secs).padStart(2, "0"); }
+    function clearLocalSessionAndExit() { localStorage.removeItem('ase_user_session'); location.reload(); }
+    function displaySystemNotice(m, isErr) { const t = document.getElementById("toast"); t.textContent = m; t.className = "toast"; if (isErr) t.classList.add("error"); t.classList.remove("hidden"); setTimeout(() => t.classList.add("hidden"), 3000); }
+  </script>
+</body>
+</html>
