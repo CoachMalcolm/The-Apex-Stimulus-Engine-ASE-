@@ -147,7 +147,7 @@
     // ============================================================
     // BLOCK 3: CROSS-ORIGIN API MIDDLEWARE HANDSHAKES
     // ============================================================
-    const APPS_SCRIPT_URL = "https://google.com";
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxpjlW0DD5I1pvrPIxD82iw9b2Hx04kKLdIt-DkJNx1UysSlNpV6uKGMI8_bnt2Jxwz/exec";
     let userSession = JSON.parse(localStorage.getItem('ase_user_session')) || null, activeTrack = "Strength Day", loadedExercises = [], intervalTimerHandle = null, timerTimeLeft = 0, timerElapsed = 0, timerTotal = 120, timerIsPaused = false;
 
     document.addEventListener("DOMContentLoaded", function () { initListeners(); if (userSession) bootstrapApplicationWorkspace(); });
