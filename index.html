@@ -24,7 +24,11 @@
     .login-card input { width: 100%; padding: 14px; font-size: 16px; border-radius: var(--radius); border: 1px solid var(--border-strong); background: var(--bg-input); color: var(--text-bright); margin-bottom: 20px; font-family: inherit; }
     .login-card input:focus { outline: none; border-color: var(--accent); }
     .primary-btn { width: 100%; padding: 14px; font-size: 16px; font-weight: 700; border-radius: var(--radius); border: none; background: var(--accent); color: #fff; cursor: pointer; transition: opacity 0.15s; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
-    .primary-btn:active { opacity: 0.8; }
+    .primary-btn:all { opacity: 0.8; }
+  </style>
+</head>
+<head>
+  <style>
     .app-screen { min-height: 100vh; display: flex; flex-direction: column; }
     .app-header { display: flex; align-items: center; justify-content: space-between; padding: 16px; background: var(--bg-card); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 10; }
     .header-left h1 { font-size: 18px; font-weight: 800; color: var(--text-bright); }
@@ -50,26 +54,6 @@
     .set-label { font-size: 13px; font-weight: 700; color: var(--text-dim); text-align: left; }
     .note-container { margin-top: 10px; width: 100%; }
     .note-container textarea { width: 100%; padding: 10px; font-size: 13px; border-radius: var(--radius); border: 1px solid var(--border-strong); background: var(--bg-input); color: var(--text-bright); resize: none; font-family: inherit; }
-    .exercise-card.shading-green { background: rgba(31,122,61,0.08) !important; border-color: var(--success) !important; }
-    .exercise-card.shading-blue { background: rgba(46,108,246,0.08) !important; border-color: var(--accent) !important; }
-    .exercise-card.shading-orange { background: rgba(179,64,47,0.08) !important; border-color: var(--danger) !important; }
-    .exercise-card.shading-yellow { background: rgba(234,179,8,0.08) !important; border-color: var(--accent) !important; }
-    .card-actions { display: flex; gap: 8px; margin-top: 14px; }
-    .action-btn { flex: 1; padding: 12px; font-size: 13px; font-weight: 700; border-radius: var(--radius); cursor: pointer; border: 1px solid var(--border-strong); background: #f8fafc; color: var(--text); text-transform: uppercase; }
-    .action-btn.primary { background: var(--success); border-color: var(--success); color: #fff; }
-    .history-cues { background: #f8fafc; border: 1px dashed var(--border-strong); border-radius: var(--radius); padding: 10px 12px; margin-bottom: 12px; font-size: 13px; }
-    .history-cue-title { font-weight: 700; color: var(--text-dim); margin-bottom: 4px; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; }
-    .modal-overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.4); backdrop-filter: blur(2px); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 16px; }
-    .modal-card { width: 100%; max-width: 440px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; position: relative; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
-    .modal-close { position: absolute; top: 12px; right: 12px; width: 32px; height: 32px; background: transparent; border: none; color: var(--text-dim); font-size: 20px; cursor: pointer; }
-    .timer-widget { position: fixed; bottom: 20px; right: 20px; width: 190px; background: #0f172a; color: #fff; border-radius: var(--radius-lg); padding: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); z-index: 500; border: 1px solid #334155; text-align: center; transition: background 0.2s; }
-    .timer-widget.pulse-red { animation: timerAlertPulse 0.5s infinite alternate; }
-    @keyframes timerAlertPulse { from { background: #0f172a; border-color: #334155; } to { background: #7f1d1d; border-color: #ef4444; } }
-    .timer-display-digits { font-size: 32px; font-weight: 800; font-variant-numeric: tabular-nums; margin: 4px 0; color: #38bdf8; }
-    .timer-controls-row { display: flex; gap: 4px; justify-content: center; margin-top: 6px; }
-    .timer-mini-btn { padding: 4px 8px; font-size: 11px; font-weight: 700; border-radius: 6px; border: none; background: #334155; color: #fff; cursor: pointer; }
-    .timer-mini-btn.action { background: #0284c7; }
-    .timer-input-duration { width: 54px; background: #1e293b; border: 1px solid #475569; color: #fff; border-radius: 4px; text-align: center; font-size: 12px; padding: 2px; font-weight: bold; }
   </style>
 </head>
 <body>
@@ -137,254 +121,103 @@
       <button id="chatSendMsgBtn" class="primary-btn">Transmit Message</button>
     </div>
   </div>
-    <script>
-      <script>
-    // ============================================================
-    // SCRIPT BLOCK A: SANDBOX-PROOF CHANNELS & MATRIX LAYOUTS
-    // ============================================================
-    const APPS_SCRIPT_URL = "https://google.com";
-    let userSession = null;
-    let activeTrack = "Strength Day";
-    let loadedExercises = [];
-    let intervalTimerHandle = null;
-    let timerTimeLeft = 120;
-    let timerTotal = 120;
-    let timerIsPaused = false;
-    let localHistoryArray = [];
-
-    document.addEventListener("DOMContentLoaded", function () {
-      initListeners();
-    });
-    
+  <script>
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw7KryMvIFvH6kKHDm1Z08gYtPMRStS89ojXYSKJsBlXmurbOxP_quz-djWtXF46M31/exec";
+    let userSession = null, activeTrack = "Strength Day", loadedExercises = [], intervalTimerHandle = null, timerTimeLeft = 120, timerTotal = 120, timerIsPaused = false, localHistoryArray = [];
+    document.addEventListener("DOMContentLoaded", function () { initListeners(); });
     function initListeners() {
       document.getElementById("loginBtn").addEventListener("click", executeLoginHandshake);
       document.getElementById("logoutBtn").addEventListener("click", clearLocalSessionAndExit);
-      document.getElementById("tabBtnWorkout").addEventListener("click", function() { switchMainNavigationPane("workout"); });
-      document.getElementById("tabBtnHistory").addEventListener("click", function() { switchMainNavigationPane("history"); });
+      document.getElementById("tabBtnWorkout").addEventListener("click", () => switchMainNavigationPane("workout"));
+      document.getElementById("tabBtnHistory").addEventListener("click", () => switchMainNavigationPane("history"));
       document.getElementById("msgDrawerBtn").addEventListener("click", openCoachChatDrawer);
-      document.getElementById("closeChatModalBtn").addEventListener("click", function() { document.getElementById("chatModal").classList.add("hidden"); });
+      document.getElementById("closeChatModalBtn").addEventListener("click", () => document.getElementById("chatModal").classList.add("hidden"));
       document.getElementById("chatSendMsgBtn").addEventListener("click", submitMessageTransactionText);
     }
-
     function executeLoginHandshake() {
-      var email = document.getElementById("userEmail").value.trim();
-      var pass = document.getElementById("userPassword").value.trim();
+      var email = document.getElementById("userEmail").value.trim(), pass = document.getElementById("userPassword").value.trim();
       if (!email || !pass) { displaySystemNotice("Fill out all fields.", true); return; }
-      
-      var btn = document.getElementById("loginBtn");
-      btn.disabled = true;
-      btn.textContent = "Verifying...";
-      
-      // Removed localStorage item locks to bypass browser tracking blocks completely
+      var btn = document.getElementById("loginBtn"); btn.disabled = true; btn.textContent = "Verifying...";
       jsonpRequest({ action: "login", email: email, password: pass }, function (res) {
-        btn.disabled = false;
-        btn.textContent = "Log In";
-        if (res && res.success) {
-          userSession = res;
-          bootstrapApplicationWorkspace();
-        } else {
-          displaySystemNotice(res.error || "Login rejected.", true);
-        }
+        btn.disabled = false; btn.textContent = "Log In";
+        if (res && res.success) { userSession = res; bootstrapApplicationWorkspace(); }
+        else { displaySystemNotice(res.error || "Login rejected.", true); }
       });
     }
-
     function bootstrapApplicationWorkspace() {
-      document.getElementById("loginScreen").classList.add("hidden");
-      document.getElementById("appScreen").classList.remove("hidden");
+      document.getElementById("loginScreen").classList.add("hidden"); document.getElementById("appScreen").classList.remove("hidden");
       document.getElementById("headerAthleteName").textContent = userSession.athleteName;
-      
       if (userSession.customHypePhrases && userSession.customHypePhrases.length > 0) {
-        var list = userSession.customHypePhrases;
-        document.getElementById("loginBtn").textContent = list[Math.floor(Math.random() * list.length)];
+        var list = userSession.customHypePhrases; document.getElementById("loginBtn").textContent = list[Math.floor(Math.random() * list.length)];
       }
-      
-      var container = document.getElementById("trackButtonsContainer");
-      if (userSession.routingMode === "Fixed Calendar") {
-        container.innerHTML = '<button class="track-btn active" onclick="setTrack(\'Strength Day\')">Strength Day</button><button class="track-btn" onclick="setTrack(\'Running Day\')">Running Day</button>';
-      } else {
-        container.innerHTML = '<button class="track-btn active" onclick="setTrack(\'Strength Day\')">Strength Day</button><button class="track-btn" onclick="setTrack(\'Functional\')">Functional</button><button class="track-btn" onclick="setTrack(\'Running Day\')">Running Day</button>';
-      }
+      const container = document.getElementById("trackButtonsContainer");
+      if (userSession.routingMode === "Fixed Calendar") { container.innerHTML = '<button class="track-btn active" onclick="setTrack(\'Strength Day\')">Strength Day</button><button class="track-btn" onclick="setTrack(\'Running Day\')">Running Day</button>'; }
+      else { container.innerHTML = '<button class="track-btn active" onclick="setTrack(\'Strength Day\')">Strength Day</button><button class="track-btn" onclick="setTrack(\'Functional\')">Functional</button><button class="track-btn" onclick="setTrack(\'Running Day\')">Running Day</button>'; }
       fetchActiveTrackDashboardData();
     }
-
-    function setTrack(tName) {
-      activeTrack = tName;
-      document.querySelectorAll(".track-btn").forEach(function(b) {
-        b.classList.toggle("active", b.textContent === tName);
-      });
-      fetchActiveTrackDashboardData();
-    }
-    
+    function setTrack(tName) { activeTrack = tName; document.querySelectorAll(".track-btn").forEach(b => b.classList.toggle("active", b.textContent === tName)); fetchActiveTrackDashboardData(); }
     function fetchActiveTrackDashboardData() {
-      var box = document.getElementById("exerciseContainer");
-      box.innerHTML = "<div style='color:var(--text-dim); text-align:center; padding:20px;'>Syncing system ledger elements...</div>";
+      var box = document.getElementById("exerciseContainer"); box.innerHTML = "<div style='color:var(--text-dim); text-align:center; padding:20px;'>Syncing system ledger elements...</div>";
       jsonpRequest({ action: "getDashboard", athleteEmail: userSession.email, targetTrack: activeTrack }, function (res) {
-        if (res && res.success) {
-          loadedExercises = res.exercises || [];
-          renderExercisePrescriptionCards();
-        } else {
-          box.innerHTML = "<div style='color:var(--danger); text-align:center; padding:20px;'>Connection failed.</div>";
-        }
+        if (res && res.success) { loadedExercises = res.exercises || []; renderExercisePrescriptionCards(); }
+        else { box.innerHTML = "<div style='color:var(--danger); text-align:center; padding:20px;'>Connection failed.</div>"; }
       });
     }
-
     function renderExercisePrescriptionCards() {
-      var box = document.getElementById("exerciseContainer"); 
-      box.innerHTML = "";
-      if (loadedExercises.length === 0) {
-        box.innerHTML = "<div style='color:var(--text-dim); text-align:center; padding:20px;'>No exercises prescribed for today.</div>";
-        return;
-      }
-      
+      var box = document.getElementById("exerciseContainer"); box.innerHTML = "";
+      if (loadedExercises.length === 0) { box.innerHTML = "<div style='color:var(--text-dim); text-align:center; padding:20px;'>No exercises prescribed for today.</div>"; return; }
       loadedExercises.forEach(function (ex, idx) {
-        var card = document.createElement("div");
-        card.className = "exercise-card";
-        card.id = "card_ex_" + idx;
+        var card = document.createElement("div"); card.className = "exercise-card"; card.id = "card_ex_" + idx;
         var targetLoad = ex.preAllocatedLoad !== null ? ex.preAllocatedLoad : "—";
-        
         var historyHtml = "<div style='color:var(--text-dim); font-style:italic;'>No prior performance entries.</div>";
-        if (ex.history && ex.history.length > 0) {
-          historyHtml = ex.history.map(function(h) {
-            var setsStr = (h.payload.exercises && h.payload.exercises.sets) ? h.payload.exercises.sets.map(function(s) { return s.load + "x" + s.reps + s.grade; }).join(" ") : "N/A";
-            return "<div>• <strong>" + h.timestamp + ":</strong> " + setsStr + "</div>";
-          }).join("");
-        }
-        
+        if (ex.history && ex.history.length > 0) { historyHtml = ex.history.map(function(h) { var setsStr = (h.payload.exercises && h.payload.exercises.sets) ? h.payload.exercises.sets.map(function(s) { return s.load + "x" + s.reps + s.grade; }).join(" ") : "N/A"; return "<div>• <strong>" + h.timestamp + ":</strong> " + setsStr + "</div>"; }).join(""); }
         var matrixRows = "";
-        for (var s = 1; s <= 3; s++) {
-          matrixRows += '<div class="set-row" id="row_' + idx + '_' + s + '">' +
-            '<div class="set-label">S' + s + '</div>' +
-            '<div><input type="number" pattern="[0-9]*" placeholder="lbs" id="load_' + idx + '_' + s + '" oninput="evaluateAutoRegShading(' + idx + ')" value="' + (ex.preAllocatedLoad || '') + '" /></div>' +
-            '<div><input type="number" pattern="[0-9]*" placeholder="reps" id="reps_' + idx + '_' + s + '" oninput="evaluateAutoRegShading(' + idx + ')" /></div>' +
-            '<div><select id="grade_' + idx + '_' + s + '" onchange="evaluateAutoRegShading(' + idx + ')">' +
-              '<option value="">Grade</option><option>A+</option><option>A</option><option>A-</option>' +
-              '<option>B+</option><option>B</option><option>B-</option><option>C+</option><option>C</option>' +
-              '<option>C-</option><option>D</option><option>F</option>' +
-            '</select></div>' +
-          '</div>';
-        }
-
+        for (var s = 1; s <= 3; s++) { matrixRows += '<div class="set-row" id="row_' + idx + '_' + s + '"><div class="set-label">S' + s + '</div><div><input type="number" pattern="[0-9]*" placeholder="lbs" id="load_' + idx + '_' + s + '" oninput="evaluateAutoRegShading(' + idx + ')" value="' + (ex.preAllocatedLoad || '') + '" /></div><div><input type="number" pattern="[0-9]*" placeholder="reps" id="reps_' + idx + '_' + s + '" oninput="evaluateAutoRegShading(' + idx + ')" /></div><div><select id="grade_' + idx + '_' + s + '" onchange="evaluateAutoRegShading(' + idx + ')"><option value="">Grade</option><option>A+</option><option>A</option><option>A-</option><option>B+</option><option>B</option><option>B-</option><option>C+</option><option>C</option><option>C-</option><option>D</option><option>F</option></select></div></div>'; }
         card.innerHTML = '<div class="exercise-head"><div><div class="exercise-name">' + ex.exerciseName + '</div><div class="exercise-target">3 sets of ' + ex.minReps + '-' + ex.maxReps + '</div></div><div style="font-size:20px; font-weight:800; color:var(--accent);">' + targetLoad + ' <span style="font-size:12px; font-weight:400; color:var(--text-dim);">lbs</span></div></div><div class="history-cues"><div class="history-cue-title">History</div>' + historyHtml + '</div><div class="set-matrix">' + matrixRows + '</div><div class="note-container"><textarea id="notes_' + idx + '" rows="1" placeholder="Add session notes for this exercise here..."></textarea></div><div class="card-actions"><button class="action-btn" onclick="launchRestTimerClockContainer()">⏱ Rest Timer</button><button class="action-btn primary" id="submit_${idx}" onclick="commitPerformanceRowData(' + idx + ')">Submit Session Log</button></div>';
         box.appendChild(card);
       });
     }
-    // ============================================================
-    // SCRIPT BLOCK B: AUTOREGULATION & MOBILE REST TIME WIDGETS
-    // ============================================================
     function evaluateAutoRegShading(exIdx) {
-      var card = document.getElementById("card_ex_" + exIdx);
-      var targetEx = loadedExercises[exIdx];
-      let allEntered = true;
-      let minMetCount = 0;
-      let maxExceedCount = 0;
-      let belowMinCount = 0;
-      var validGrades = ["A+", "A", "A-", "B+", "B", "B-", "C+"];
-
+      var card = document.getElementById("card_ex_" + exIdx), targetEx = loadedExercises[exIdx]; let allEntered = true, minMetCount = 0, maxExceedCount = 0, belowMinCount = 0; var validGrades = ["A+", "A", "A-", "B+", "B", "B-", "C+"];
       for (var s = 1; s <= 3; s++) {
-        var rVal = document.getElementById("reps_" + exIdx + "_" + s).value;
-        var gVal = document.getElementById("grade_" + exIdx + "_" + s).value;
-        if (!rVal || !gVal) { allEntered = false; break; }
-        
-        var reps = parseInt(rVal, 10);
-        if (!validGrades.includes(gVal) || reps < targetEx.minReps) { belowMinCount++; }
-        else if (reps >= targetEx.maxReps) { maxExceedCount++; }
-        else { minMetCount++; }
+        var rVal = document.getElementById("reps_" + exIdx + "_" + s).value, gVal = document.getElementById("grade_" + exIdx + "_" + s).value; if (!rVal || !gVal) { allEntered = false; break; }
+        var reps = parseInt(rVal, 10); if (!validGrades.includes(gVal) || reps < targetEx.minReps) { belowMinCount++; } else if (reps >= targetEx.maxReps) { maxExceedCount++; } else { minMetCount++; }
       }
-
-      card.className = "exercise-card";
-      if (!allEntered) return;
-
-      if (belowMinCount > 0) { card.classList.add("shading-yellow"); }
-      else if (maxExceedCount === 3) { card.classList.add("shading-green"); }
-      else if (minMetCount === 3 || (minMetCount + maxExceedCount === 3 && maxExceedCount < 3)) { card.classList.add("shading-blue"); }
-      else { card.classList.add("shading-orange"); }
+      card.className = "exercise-card"; if (!allEntered) return;
+      if (belowMinCount > 0) { card.classList.add("shading-yellow"); } else if (maxExceedCount === 3) { card.classList.add("shading-green"); } else if (minMetCount === 3 || (minMetCount + maxExceedCount === 3 && maxExceedCount < 3)) { card.classList.add("shading-blue"); } else { card.classList.add("shading-orange"); }
     }
-
     function commitPerformanceRowData(exIdx) {
-      var targetEx = loadedExercises[exIdx];
-      var setsData = [];
-      let formComplete = true;
-      var summaryText = document.getElementById("notes_" + exIdx).value.trim();
-      
+      var targetEx = loadedExercises[exIdx], setsData = []; let formComplete = true; var summaryText = document.getElementById("notes_" + exIdx).value.trim();
       for (var s = 1; s <= 3; s++) {
-        var l = document.getElementById("load_" + exIdx + "_" + s).value;
-        var r = document.getElementById("reps_" + exIdx + "_" + s).value;
-        var g = document.getElementById("grade_" + exIdx + "_" + s).value;
-        if (!l || !r || !g) { formComplete = false; break; }
+        var l = document.getElementById("load_" + exIdx + "_" + s).value, r = document.getElementById("reps_" + exIdx + "_" + s).value, g = document.getElementById("grade_" + exIdx + "_" + s).value; if (!l || !r || !g) { formComplete = false; break; }
         setsData.push({ set: s, load: parseFloat(l), reps: parseInt(r, 10), grade: g });
       }
       if (!formComplete) { displaySystemNotice("Complete all rows.", true); return; }
-      
-      var payload = { summary_notes: summaryText, exercises: { name: targetEx.exerciseName, sets: setsData } };
-      var btn = document.getElementById("submit_" + exIdx);
-      btn.disabled = true;
-      btn.textContent = "Logging...";
-      
-      var dObj = new Date();
-      var dateStr = String(dObj.getMonth() + 1).padStart(2,'0') + "/" + String(dObj.getDate()).padStart(2,'0');
-      localHistoryArray.unshift({ date: dateStr, name: targetEx.exerciseName, sets: setsData });
-      renderLocalHistoryLedgerPane();
-      
+      var payload = { summary_notes: summaryText, exercises: { name: targetEx.exerciseName, sets: setsData } }; var btn = document.getElementById("submit_" + exIdx); btn.disabled = true; btn.textContent = "Logging...";
+      var dObj = new Date(), dateStr = String(dObj.getMonth() + 1).padStart(2,'0') + "/" + String(dObj.getDate()).padStart(2,'0'); localHistoryArray.unshift({ date: dateStr, name: targetEx.exerciseName, sets: setsData }); renderLocalHistoryLedgerPane();
       jsonpRequest({ action: "submitWorkout", athleteEmail: userSession.email, targetTrack: activeTrack, exerciseName: targetEx.exerciseName, performancePayloadJSON: JSON.stringify(payload) }, function (res) {
-        if (res && res.success) {
-          displaySystemNotice("Session log locked.");
-          btn.textContent = "Saved - Tap to Edit";
-          btn.style.background = "var(--border-strong)";
-          btn.style.color = "var(--text)";
-        } else {
-          displaySystemNotice(res.error || "Submission failed.", true);
-          btn.disabled = false;
-          btn.textContent = "Submit Session Log";
-        }
+        if (res && res.success) { displaySystemNotice("Session log locked."); btn.textContent = "Saved - Tap to Edit"; btn.style.background = "var(--border-strong)"; btn.style.color = "var(--text)"; }
+        else { displaySystemNotice(res.error || "Submission failed.", true); btn.disabled = false; btn.textContent = "Submit Session Log"; }
       });
     }
-
-    function renderLocalHistoryLedgerPane() {
-      var container = document.getElementById("historyLedgerList");
-      if (!container) return;
-      if (localHistoryArray.length === 0) { container.innerHTML = "<div>No logged sessions in active display cache.</div>"; return; }
-      container.innerHTML = localHistoryArray.map(function(h) {
-        var metrics = h.sets.map(function(s) { return s.load + "x" + s.reps + s.grade; }).join("  ");
-        return "<div style='background:#f8fafc;padding:12px;border:1px solid var(--border);border-radius:var(--radius);'><strong>" + h.date + " - " + h.name + ":</strong> <span style='color:var(--accent);font-weight:bold;margin-left:8px;'>" + metrics + "</span></div>";
-      }).join("");
-    }
-
+    function renderLocalHistoryLedgerPane() { var container = document.getElementById("historyLedgerList"); if (!container) return; if (localHistoryArray.length === 0) { container.innerHTML = "<div>No logged sessions in active display cache.</div>"; return; } container.innerHTML = localHistoryArray.map(function(h) { var metrics = h.sets.map(function(s) { return s.load + "x" + s.reps + s.grade; }).join("  "); return "<div style='background:#f8fafc;padding:12px;border:1px solid var(--border);border-radius:var(--radius);'><strong>" + h.date + " - " + h.name + ":</strong> <span style='color:var(--accent);font-weight:bold;margin-left:8px;'>" + metrics + "</span></div>"; }).join(""); }
     function openCoachChatDrawer() { document.getElementById("chatModal").classList.remove("hidden"); syncMessageHistoryFeed(); }
     function syncMessageHistoryFeed() {
-      var box = document.getElementById("chatMessageThread"); 
-      box.innerHTML = "<div style='color:var(--text-dim); text-align:center;'>Syncing...</div>";
+      var box = document.getElementById("chatMessageThread"); box.innerHTML = "<div style='color:var(--text-dim); text-align:center;'>Syncing...</div>";
       jsonpRequest({ action: "fetchMessages", userEmail: userSession.email }, function (res) {
         if (res && res.success) {
-          box.innerHTML = "";
-          if (res.messages.length === 0) { box.innerHTML = "<div style='color:var(--text-dim); text-align:center; padding-top:20px;'>No notes on record.</div>"; return; }
-          res.messages.forEach(function(m) {
-            var r = document.createElement("div");
-            r.style.padding = "6px 10px";
-            r.style.borderRadius = "8px";
-            r.style.maxWidth = "80%";
-            if (m.direction === "out") { r.style.marginLeft = "auto"; r.style.background = "var(--accent)"; r.style.color = "#fff"; }
-            else { r.style.marginRight = "auto"; r.style.background = "var(--border-strong)"; r.style.color = "var(--text-bright)"; }
-            r.textContent = m.text;
-            box.appendChild(r);
-          });
-          box.scrollTop = box.scrollHeight;
+          box.innerHTML = ""; if (res.messages.length === 0) { box.innerHTML = "<div style='color:var(--text-dim); text-align:center; padding-top:20px;'>No notes on record.</div>"; return; }
+          res.messages.forEach(function(m) { var r = document.createElement("div"); r.style.padding = "6px 10px"; r.style.borderRadius = "8px"; r.style.maxWidth = "80%"; if (m.direction === "out") { r.style.marginLeft = "auto"; r.style.background = "var(--accent)"; r.style.color = "#fff"; } else { r.style.marginRight = "auto"; r.style.background = "var(--border-strong)"; r.style.color = "var(--text-bright)"; } r.textContent = m.text; box.appendChild(r); }); box.scrollTop = box.scrollHeight;
         }
       });
     }
-
     function submitMessageTransactionText() {
-      var txt = document.getElementById("chatInputText").value.trim();
-      if (!txt) return;
-      document.getElementById("chatSendMsgBtn").disabled = true;
-      jsonpRequest({ action: "transmitMessage", sender: userSession.email, receiver: userSession.coachEmail, messageText: txt }, function (res) {
-        document.getElementById("chatSendMsgBtn").disabled = false;
-        if (res && res.success) { document.getElementById("chatInputText").value = ""; syncMessageHistoryFeed(); }
-      });
+      var txt = document.getElementById("chatInputText").value.trim(); if (!txt) return; document.getElementById("chatSendMsgBtn").disabled = true;
+      jsonpRequest({ action: "transmitMessage", sender: userSession.email, receiver: userSession.coachEmail, messageText: txt }, function (res) { document.getElementById("chatSendMsgBtn").disabled = false; if (res && res.success) { document.getElementById("chatInputText").value = ""; syncMessageHistoryFeed(); } });
     }
-
     function launchRestTimerClockContainer() { timerTimeLeft = 120; timerElapsed = 0; timerTotal = 120; timerIsPaused = false; document.getElementById("timerWidget").classList.remove("hidden"); document.getElementById("timerManualInput").value = "02:00"; updateTimerWidgetUIElements(); if (intervalTimerHandle) clearInterval(intervalTimerHandle); intervalTimerHandle = setInterval(executeTimerTickLoop, 1000); }
     function adjustRestTimerValue(secs) { timerTimeLeft = Math.max(0, timerTimeLeft + secs); timerTotal = Math.max(0, timerTotal + secs); updateTimerWidgetUIElements(); }
-    function applyManualTimerDurationSet() { var val = document.getElementById("timerManualInput").value.split(":"); if (val.length === 2) { var computed = parseInt(val,10) * 60 + parseInt(val,10); if(!isNaN(computed)) { timerTimeLeft = computed; timerTotal = computed; updateTimerWidgetUIElements(); } } }
+    function applyManualTimerDurationSet() { const val = document.getElementById("timerManualInput").value.split(":"); if (val.length === 2) { var computed = parseInt(val,10) * 60 + parseInt(val,10); if(!isNaN(computed)) { timerTimeLeft = computed; timerTotal = computed; updateTimerWidgetUIElements(); } } }
     function executeTimerTickLoop() { if (timerIsPaused) return; if (timerTimeLeft > 0) { timerTimeLeft--; timerElapsed++; updateTimerWidgetUIElements(); if (timerTimeLeft <= 10) { document.getElementById("timerWidget").classList.add("pulse-red"); triggerBeepSoundAudioNotification(); } else { document.getElementById("timerWidget").classList.remove("pulse-red"); } } else { shutdownIntervalTimerEngine(); } }
     function updateTimerWidgetUIElements() { document.getElementById("timerClockDisplay").textContent = formatClockOutput(timerTimeLeft); document.getElementById("timerManualInput").value = formatClockOutput(timerTimeLeft); }
     function triggerBeepSoundAudioNotification() { try { var ctx = new (window.AudioContext || window.webkitAudioContext)(); var osc = ctx.createOscillator(); osc.type = 'sine'; osc.frequency.setValueAtTime(800, ctx.currentTime); osc.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 0.1); } catch(e){} }
@@ -392,25 +225,8 @@
     function resetIntervalTimerClockDisplay() { launchRestTimerClockContainer(); }
     function shutdownIntervalTimerEngine() { clearInterval(intervalTimerHandle); document.getElementById("timerWidget").classList.remove("pulse-red"); document.getElementById("timerWidget").classList.add("hidden"); }
     function switchMainNavigationPane(tPane) { document.getElementById("tabBtnWorkout").classList.toggle("active", tPane === "workout"); document.getElementById("tabBtnHistory").classList.toggle("active", tPane === "history"); document.getElementById("viewWorkout").classList.toggle("hidden", tPane !== "workout"); document.getElementById("viewHistory").classList.toggle("hidden", tPane !== "history"); }
-    
-    function jsonpRequest(p, cbFn) {
-      var cbName = 'ase_cb_' + Math.random().toString(36).slice(2, 10);
-      window[cbName] = function (d) {
-        try { delete window[cbName]; } catch(e){ window[cbName] = undefined; }
-        var scr = document.getElementById(cbName);
-        if (scr && scr.parentNode) scr.parentNode.removeChild(scr);
-        cbFn(d);
-      };
-      var q = new URLSearchParams(p);
-      q.append("callback", cbName);
-      var script = document.createElement("script");
-      script.id = cbName;
-      script.src = APPS_SCRIPT_URL + "?" + q.toString();
-      document.body.appendChild(script);
-    }
-
+    function jsonpRequest(p, cbFn) { var cbName = 'ase_cb_' + Math.random().toString(36).slice(2, 10); window[cbName] = function (d) { try { delete window[cbName]; } catch(e){ window[cbName] = undefined; } var scr = document.getElementById(cbName); if (scr && scr.parentNode) scr.parentNode.removeChild(scr); cbFn(d); }; var q = new URLSearchParams(p); q.append("callback", cbName); const script = document.createElement("script"); script.id = cbName; script.src = APPS_SCRIPT_URL + "?" + q.toString(); document.body.appendChild(script); }
     function formatClockOutput(s) { var mins = Math.floor(s / 60), secs = s % 60; return String(mins).padStart(2,"0") + ":" + String(secs).padStart(2, "0"); }
-    function clearLocalSessionAndExit() { location.reload(); }
     function displaySystemNotice(m, isErr) { var t = document.getElementById("toast"); t.textContent = m; t.className = "toast"; if (isErr) t.classList.add("error"); t.classList.remove("hidden"); setTimeout(function() { t.classList.add("hidden"); }, 3000); }
   </script>
 </body>
