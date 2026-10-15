@@ -146,7 +146,7 @@
     // ============================================================
     // BLOCK 3: GATES & INITIALIZATION LOGIC
     // ============================================================
-    const APPS_SCRIPT_URL = "https://google.com";
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzVJniurEHZ4sVO7Lhk_4qLMniQIoXR8Xc4iuSem7SsjnpoBrf1PMf5T3WOU8v1BmRM/exec";
     let userSession = JSON.parse(localStorage.getItem('ase_user_session')) || null, activeTrack = "Strength Day", loadedExercises = [], intervalTimerHandle = null, timerTimeLeft = 0, timerElapsed = 0, timerTotal = 120, timerIsPaused = false;
 
     document.addEventListener("DOMContentLoaded", function () { initListeners(); if (userSession) bootstrapApplicationWorkspace(); });
